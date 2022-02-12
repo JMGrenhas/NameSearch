@@ -1,0 +1,4 @@
+*.pyc
+*.bat
+_bak/*
+.vscode/*
