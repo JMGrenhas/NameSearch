@@ -1,5 +1,4 @@
 *.pyc
 _bak/*
 *.bat
-
-desktop.ini
+./desktop.ini
