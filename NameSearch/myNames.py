@@ -90,34 +90,40 @@ aAbrevDivCtt = (("associacao", "ass"), ("instituto", "inst"), ("lugar", "lug"), 
 
 
 def Name_List_Search(acNameList: list, cSearch: str,
-                     lSo_1o: bool = False, lUsarIniciais: bool = True) -> list:
+                     lGet1: bool = False, lInitials: bool = True) -> list:
     '''
-    Camada sobre Name_List_Search_unfolded para simplificar resultado.
+    Efetua a procura numa lista de nomes, dado o nome de uma pessoa ou organização.
+    Camada sobre Name_List_Search_unfolded, com os mesmos parâmetros, para simplificar resultado.
+    Parms.:
+      - acNameList: Lista de procura.
+      - cSearch: Valor de procura.
+      - [lGet1] (False): Indica se retorna logo após encontrar um valor.
+      - [lInitials] (True): Indica se é permitida a unificação pelas iniciais (primeiro caráter) de cSearch. Só irá ocorrer esta pesquisa se cSearch, depois de normalizada, tiver mais de uma palavra. Lembre-se que a normalização retira certas palavras como "de", "da", etc..
 
-    Resultado: Lista de str de unificação.
+    Resultado: Lista de cadeias de unificação.
     '''
     aTable1, aTable2, aPalPrc = Name_List_Search_unfolded(
-        acNameList, cSearch, lSo_1o, lUsarIniciais)
+        acNameList, cSearch, lGet1, lInitials)
 
     return aTable1 + aTable2
 
 
 def Name_List_Search_unfolded(acNameList: list, cSearch: str,
-                              lSo_1o: bool = False, lUsarIniciais: bool = True):
+                              lGet1: bool = False, lInitials: bool = True):
     '''
     Efetua a procura numa lista de nomes, dado o nome de uma pessoa ou organização. Retorna duas listas de unificação e uma de controlo.
     Parms.:
       - acNameList: Lista de procura.
       - cSearch: Valor de procura.
-      - [lSo_1o] (False): Indica se retorna logo após encontrar um valor provável.
-      - [lUsarIniciais] (True): Indica se é permitida a unificação pelas iniciais de cSearch. Só irá ocorrer esta pesquisa ao procurar mais de uma palavra, depois de normalizar (o que retira certas palavras como "de", "da", etc.).
+      - [lGet1] (False): Indica se retorna logo após encontrar um valor.
+      - [lInitials] (True): Indica se é permitida a unificação pelas iniciais (primeiro caráter) de cSearch. Só irá ocorrer esta pesquisa se cSearch, depois de normalizada, tiver mais de uma palavra. Lembre-se que a normalização retira certas palavras como "de", "da", etc..
 
     Resultado:
       - aTable1: lista strings => tabela de unificação preferencial
       - aTable2: lista strings => tabela de unificação secundária, pela 1ª e última inicial.
       - aPalPrc:
-          lSo_1o = False => Lista de palavras normalizadas de cSearch que foram usadas na procura. Tipicamente, servirá para mostrar na janela de Debug.
-          lSo_1o = True => Lista de uma posição com o resultado eleito.
+          lGet1 = False => Lista de palavras normalizadas de cSearch que foram usadas na procura. Tipicamente, servirá para mostrar na janela de Debug.
+          lGet1 = True => Lista de uma posição com o resultado eleito.
     '''
     aPalPrc = NormGrafiaNome_List(cSearch)
     # Há palavras != de preposições "de".
@@ -127,13 +133,13 @@ def Name_List_Search_unfolded(acNameList: list, cSearch: str,
         # cSearch só contém palavras descartadas pela normalização (ex.: "da").
         aPalPrc = NormGrafiaNome_List(cSearch, lMaisNorm)
 
-    if not lUsarIniciais or not lMaisNorm or len(aPalPrc) == 1:
-        # só uma palavra => não procurar a inicial, para evitar demasiados resultados sem interesse.
-        c1aUltIniciais = ""
+    if not lInitials or not lMaisNorm:
+        # Evitar demasiados resultados sem interesse.
         cIniciais = ""
+        c1aUltIniciais = ""
     else:
-        c1aUltIniciais = " ".join(Da1aUltIniciais(aPalPrc))
-        cIniciais = " ".join(DaIniciaisLista(aPalPrc))
+        cIniciais, c1aUltIniciais = DaStrComIniciais(aPalPrc)
+
     # ---
     # Expressão regex para encontrar, mesmo que aPalPrc contenha abreviaturas ou iniciais.
     # Ex.: procurar "joao r silva" deverá encontrar "joao rodrigo silva".
@@ -149,7 +155,7 @@ def Name_List_Search_unfolded(acNameList: list, cSearch: str,
 
         if regex.search(cNomeNorm):  # Encontrou.
             aTable1.append(cNome)
-            if lSo_1o:
+            if lGet1:
                 found1 = cNome
                 break  # sai logo pq é a unificação mais forte
         else:
@@ -158,21 +164,21 @@ def Name_List_Search_unfolded(acNameList: list, cSearch: str,
             # Racional: para o caso de haver palavras trocadas -- ex.: "joao grenhas manuel".
             if ListaContidaEm(aPalPrc, acTestar):
                 aTable1.append(cNome)
-                if lSo_1o:
+                if lGet1:
                     found2 = cNome
 
             # Todas as iniciais das palavras escolhidas coincidem. Ex.: Procurar "joao regado grenhas".
             elif cIniciais and cIniciais == " ".join(DaIniciaisLista(acTestar)):
                 aTable1.append(cNome)
-                if lSo_1o:
+                if lGet1:
                     found3 = cNome
 
             # As iniciais escolhidas coincidem.
             elif c1aUltIniciais and c1aUltIniciais == " ".join(Da1aUltIniciais(acTestar)):
                 aTable2.append(cNome)
-                if lSo_1o:
+                if lGet1:
                     found4 = cNome
-    if lSo_1o:
+    if lGet1:
         if found1:
             aPalPrc = [found1]
         elif found2:
@@ -184,7 +190,7 @@ def Name_List_Search_unfolded(acNameList: list, cSearch: str,
         else:
             aPalPrc = None
 
-    # O resultado é um tuplo mesmo no caso lSo_1o, pq o linter confunde-se com funções a retornarem coisas muito diferentes...
+    # O resultado é um tuplo mesmo no caso lGet1, pq o linter confunde-se com funções a retornarem coisas muito diferentes...
     return aTable1, aTable2, aPalPrc
 
 
@@ -296,7 +302,7 @@ def _NameNormList(acStr: list, lRuas: bool = False, lMaisNorm: bool = True):
     for nI in range(0, len(acStr)):
         # Normalização de palavras inteiras
         acStr[nI] = ApFP(aFP_NameNorm1, acStr[nI], acStr[nI])
-        
+
         if lMaisNorm and acStr[nI] in G_aPrepo:
             acStr[nI] = ""
 
@@ -373,26 +379,45 @@ def NormGrafiaMorada(cNome: str, lElementos: bool = False):
     return aNomes
 
 
-def DaIniciaisLista(aNome):
+def DaIniciaisLista(acNome, nCarat=1):
     '''
-    Retorna lista com iniciais da lista.
+    Retorna lista com iniciais das palavras da lista.
+    Parms.:
+    - acNome: Array de palavras.
+    - [nCarat] (1): Nº máximo de carateres a extrair no início de cada palavra.
     '''
     aIniciais = []
-    for pal in aNome:
-        aIniciais.append(pal[0])
+    for pal in acNome:
+        aIniciais.append(pal[:nCarat])
     return aIniciais
 
 
-def Da1aUltIniciais(aNome):
+def Da1aUltIniciais(acNome):
     '''
     Retorna lista com iniciais da 1ª e última palavra.
     '''
     aIniciais = []
-    if aNome:
-        aIniciais.append(aNome[0][0])
-        if len(aNome) > 1:
-            aIniciais.append(aNome[-1][0])
+    if acNome:
+        aIniciais.append(acNome[0][0])
+        if len(acNome) > 1:
+            aIniciais.append(acNome[-1][0])
     return aIniciais
+
+
+def DaStrComIniciais(aPalPrc):
+    '''
+    Dada uma lista de palavras, retorna duas strings de iniciais a usar em pesquisas.
+    '''
+    if len(aPalPrc) == 1:
+        # só uma palavra => não procurar a inicial, para evitar demasiados resultados sem interesse.
+        c1aUltIniciais = ""
+        cTodasIniciais = " ".join(
+            DaIniciaisLista(aPalPrc, 3))  # 3 1ºs carateres
+    else:
+        c1aUltIniciais = " ".join(Da1aUltIniciais(aPalPrc))
+        cTodasIniciais = " ".join(DaIniciaisLista(aPalPrc))
+
+    return cTodasIniciais, c1aUltIniciais
 
 
 def AbreviaNomeID(cNome, n1o=2):
