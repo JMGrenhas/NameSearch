@@ -13,6 +13,6 @@
       Name_List_Search
       Name_List_Search_unfolded
 '''
-__version__="0.1.2"
+__version__="0.1.3"
 
 from .myNames import *

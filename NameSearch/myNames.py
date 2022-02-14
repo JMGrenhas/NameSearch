@@ -5,8 +5,8 @@
 '''
 import re
 
-from .myLists import ApFP, ATail, ListaContidaEm, RemoveVaziosLista
-from .myStrings import TiraDupEsp, camelCase2lowcase, strip_accents
+from .jg_base_iter import (ApFP, ATail, ListaContidaEm, RemoveVaziosLista,
+                              TiraDupEsp, camelCase2lowcase, strip_accents)
 
 # Função parcial que transforma, numa grafia normalizada, palavras completas de nomes, se bem que em minúsculas e sem acentos.
 # Racional: facilitar comparações em pesquisas.
@@ -154,6 +154,7 @@ def Name_List_Search_unfolded(acNameList: list, cSearch: str,
         cNomeNorm = NormGrafiaNome_Str(cNome, lMaisNorm)
 
         if regex.search(cNomeNorm):  # Encontrou.
+            # print(regex.search(cNomeNorm))
             aTable1.append(cNome)
             if lGet1:
                 found1 = cNome
@@ -194,7 +195,7 @@ def Name_List_Search_unfolded(acNameList: list, cSearch: str,
     return aTable1, aTable2, aPalPrc
 
 
-def RemoveCarsDup(cStr):
+def RemoveCarsDup(cStr: str):
     '''
     Remove carateres alfabéticos replicados, consecutivos, duma string.
     Não age sobre dígitos.

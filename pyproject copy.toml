@@ -5,10 +5,6 @@ build-backend = "flit_core.buildapi"
 [project]
 name = "NameSearch"
 authors = [{name = "JMGrenhas", email = "jmpmgrenhas@gmail.com"}]
-readme = "README.md"
 license = {file = "LICENSE"}
 classifiers = ["License :: OSI Approved :: MIT License"]
 dynamic = ["version", "description"]
-
-[project.urls]
-

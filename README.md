@@ -14,6 +14,6 @@ Receita:
 - dist: Pasta que o flit cria com os ficheiros de instalação wheel e tar.gz.
 - NameSearch: Pasta das fontes.
   - __init__.py -- módulo de entrada, originalmente myNames.py
-- teste: Testes ao módulo depois de instalado (`pip install .`).
+- teste: Testes ao módulo -- depois de instalado com (`pip install .`).
 
 

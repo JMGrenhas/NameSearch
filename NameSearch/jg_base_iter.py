@@ -1,15 +1,10 @@
 '''
-  myStrings.py - fs. sobre strings.
-  Preferencialmente, não deve ter dependências de outros módulos.
-
------
-Dicas:
-Exemplos do (python) format():
-  txt = "For only {price:.2f} dollars!".format(
-      price = 49) == "For only 49.00 dollars!"
+  jg_base_iter.py - fs. básicas sobre iteráveis, incluindo strings.
+  
+  Preferencialmente, só deve ter dependências de módulos python.
 '''
 import os.path
-import re
+#import re
 import unicodedata
 
 
@@ -36,52 +31,6 @@ def Left(cStr, nTam):
     if nTam <= 0:  # Salvaguarda.
         return ""
     return cStr[: nTam]
-
-
-def MyLeftSplit(cStr, cCar):
-    '''
-    Se cCar não existir em cStr ou for vazio, retorna ('', cStr), senão retorna o que estiver antes e depois de cCar.
-    '''
-    if cCar and (i := cStr.find(cCar)) != -1:  # Encontrou cCar" => retorna o que está antes e depois.
-        cLeft = cStr[: i].strip()
-        cResto = cStr[i+1:].strip()
-    else:
-        cLeft = ""
-        cResto = cStr
-
-    return cLeft, cResto
-
-
-def NumericSufixSplit(cID, nPad: int = None):
-    '''
-    Separa e retorna os carateres do início e o sufixo numérico no fim.
-    Parms.:
-      - cID: str -- ID a separar.
-      - [nPad]: int -- Tamanho para encher o sufixo com zeros à esquerda.
-    Resultado:
-      - cIni: str -- carateres de cID antes do sufixo numérico.
-      - cDigs: str -- dígitos no fim de cID.
-    '''
-    cDigs = ''  # Sufixo numérico.
-
-    if cID[-1].isdigit():
-        # Acaba em dígito => separar o <início> dos <dígitos do fim>, para fazer um pad0 aos dígitos, para depois ordenar em função da parte numérica.
-        cIni = ''  # Parte antes do sufixo numérico.
-
-        for nC in range(len(cID), 0, -1):  # Do fim para o início.
-            if cID[nC-1].isdigit():
-                # Enquanto apanhar dígitos no fim, coleciona.
-                cDigs = cID[nC-1] + cDigs
-            else:  # Já se apanhou algo != dígito => o resto vai para cIni.
-                cIni = cID[:nC]
-                break
-
-        if nPad:
-            cDigs = cDigs.zfill(nPad)  # <=> cDigs.rjust(nPad, '0')
-    else:
-        cIni = cID
-
-    return cIni, cDigs
 
 
 def Right(cStr, nTam):
@@ -111,17 +60,19 @@ def Right(cStr, nTam):
 
 def NatSlice(cStr, nPos, nTam=-1):
     '''
-    SUM. NatSlice - "natural slice". Extrai e retorna substring conforme parâmetros. Atenção: O posicionamento é por nºs naturais e vai de 1 a len().
-      Também funciona com listas. É equivalente ao SubStr() do Xbase++.
+    "Natural slice" -- Retorna uma substring conforme parâmetros. Atenção: O posicionamento é por números naturais.
+      Também funciona com listas.
 
     Parms.:
       - cStr: String de entrada.
-      - nPos: INT. Posição inicial em cStr:
-          * Desde o início: valores de 1 a len().
-          * Desde o fim: valores de -1 a -len().
+      - nPos: INT sem zero. Posição inicial em cStr:
+          * Desde o início: valores de 1 a len(cStr).
+          * Desde o fim: valores de -1 a -len(cStr).
       - [nTam] (VPD: até ao fim): Nº positivo de carateres a extrair.
 
     Resultado: STR.
+    Notas:
+      - É equivalente ao SubStr() do Xbase++.
     Exemplos:
       - NatSlice( 'abcdef', 2, 3 ) == 'bcd'
       - NatSlice( 'abcdef', 2 ) == 'bcdef'
@@ -139,7 +90,7 @@ def NatSlice(cStr, nPos, nTam=-1):
     return cStr[nPos-1: nPos-1+nTam]
 
 
-def IsStrNum(literal):
+def IsStrNum(literal: str):
     '''
     Indica se uma string referente a um literal só contém dígitos, a menos do ponto decimal.
     Parms.:
@@ -168,6 +119,7 @@ def strip_accents(text):
 
     Exemplos:
       - strip_accents(text).lower()
+      - strip_accents(text.lower())
     '''
     # JG: Inibi por me parecer escusado no meu âmbito.
     # try: text = unicode(text, 'utf-8')
@@ -215,54 +167,6 @@ def TiraAspas(cStr):
     return cStr
 
 
-def text_to_id(text, lLower=False, lStripAccents=False):
-    '''
-    SUM.- Gera um ID a partir duma string qualquer, que pode até ter pontuação, apóstrofos e apas. Preserva diacríticos e "case".
-
-    Parms.:
-      - text: String a converter.
-      - [lLower] (False): Indica se converte para minúsculas.
-      - [lStripAccents] (False): Indica se converte diacríticos para ascii.
-
-    Resultado: string
-    Notas: Recorre a text_to_alphanum_id().
-
-    Exemplos:
-    1) text_to_id("Montréal, über, 12.89, Mère, Françoise, noël, 889", True, True)
-      >>> 'montreal_uber_1289_mere_francoise_noel_889'
-    2)
-      #txt = "O'Hara?!, Áá-Éé-Àà-Èè-Ãã-Õõ, Çç-êô, Üürê, 12.25 9 2º II"
-      text_to_id(txt, False, False)  # => "OHara_Áá_Éé_Àà_Èè_Ãã_Õõ_Çç_êô_Üürê_1225_9_2º_II"
-      text_to_id(txt, False, True)   # => "OHara_Aa_Ee_Aa_Ee_Aa_Oo_Cc_eo_Uure_1225_9_2_II"
-      text_to_id(txt, True, False)   # => "ohara_áá_éé_àà_èè_ãã_õõ_çç_êô_üürê_1225_9_2º_ii"
-      text_to_id(txt, True, True)    # => "ohara_aa_ee_aa_ee_aa_oo_cc_eo_uure_1225_9_2_ii"
-    '''
-    if lLower:
-        text = text.lower()
-
-    if lStripAccents:
-        # Substituir espaços e hífens por "_".
-        text = re.sub('[ -]+', '_', text)
-        text = strip_accents(text)
-        text = re.sub('[^0-9a-zA-Z_]', '', text)
-    else:
-        text = text_to_alphanum_id(text)
-
-    return text
-
-
-def text_to_alphanum_id(text):
-    '''
-    SUM.- Gera um ID a partir duma string qualquer, que pode até ter pontuação, apóstrofos e apas. Preserva diacríticos e "case".
-    '''
-    text = re.sub('[ -]+', '_', text)  # Substituir espaços e hífens por "_".
-    res = ""
-    for c in text:  # Para cada caráter na string...
-        if c == "_" or c.isalnum():
-            res += c
-    return res
-
-
 def TiraDupEsp(cStr: str) -> str:
     '''
     SUM.- Numa string, converte todo o espaçamento duplo/triplo/etc. em simples: "  "-->" ".
@@ -270,40 +174,6 @@ def TiraDupEsp(cStr: str) -> str:
     while "  " in cStr:
         cStr = cStr.replace("  ", " ")
     return cStr
-
-
-# Be careful with multiple spaces, and empty strings
-# for empty words w[0] would cause an index error,
-# but with w[:1] we get an empty string as desired
-def cap_sentence(s):
-    '''
-    SUM.- Capitalizar a 1ª letra de cada palavra.
-    '''
-    return ' '.join(w[:1].upper() + w[1:] for w in s.split(' '))
-
-
-def cap_sentence2(s):
-    '''
-    SUM.- Capitalizar a 1ª letra de cada palavra.
-    '''
-    return ''.join((c.upper() if i == 0 or s[i-1] == ' ' else c) for i, c in enumerate(s))
-
-
-def EscapeQuotesInExp(cExp: str):
-    '''
-    Envolve com aspas ou apóstrofos, protegendo aspas e apóstrofos no conteúdo dum literal.
-    Racional: Evitar erros de parsing em strings, como por exemplo em queries SPARQL.
-    '''
-    if '"' in cExp:  # Contém aspas
-        cExp = cExp.replace("'", "\\'")  # escape «'»
-        cExp = "'" + cExp + "'"  # Delimitar c/ «'»
-
-    elif "'" in cExp:
-        cExp = cExp.replace('"', '\\"')  # escape «"»
-        cExp = '"' + cExp + '"'
-    else:
-        cExp = '"' + cExp + '"'
-    return cExp
 
 
 def FileNameExtension(filename, lLower=True):
@@ -337,7 +207,6 @@ def camelCase2lowcase_word(cStr: str, lSkip_if1stUpper=False, lPreserve_1stUpper
     if cStr.isupper():  # Ex.: "IV" => "iv".
         return cStr.lower()
 
-    #print(cStr, "<-- camelCase2lowcase_word")
     cStrOut = ""
     for n in range(0, len(cStr)):
         c = cStr[n]
@@ -352,7 +221,6 @@ def camelCase2lowcase_word(cStr: str, lSkip_if1stUpper=False, lPreserve_1stUpper
         else:
             cStrOut += c
 
-    #print(cStrOut, "FIM <-- camelCase2lowcase_word")
     return cStrOut
 
 
@@ -371,13 +239,11 @@ def camelCase2lowcase(cStr: str, lSkip_if1stUpper=False, lPreserve_1stUpper=Fals
 
     cStr = cStr.replace("_", " ")  # Caso dos ID.
     acStr = cStr.split()
-    #print(acStr, "<-- camelCase2lowcase, ini")
 
     for n in range(0, len(acStr)):
         acStr[n] = camelCase2lowcase_word(
             acStr[n], lSkip_if1stUpper, lPreserve_1stUpper)
 
-    #print(acStr, "<-- camelCase2lowcase, fim")
     cStrOut = ' '.join(acStr)
     return cStrOut
 
@@ -395,7 +261,7 @@ def SortedList(aStr):
 
 def SortedTable(table):
     '''
-    SUM.- Ordena uma tabela de strings até à terceira coluna, independente de maiúsculas e diacríticos.
+    SUM.- Ordena uma "tabela" de strings até à terceira coluna, independente de maiúsculas e diacríticos.
     Args:
       - table: Lista de str ou lista de itens indexáveis (listas ou tuplos).
     '''
@@ -423,6 +289,181 @@ def SortedTable(table):
 
     return table
 
-# testes
-#print(SortedTable(["bb", "Ân", "zanadu", "aa", "õ", "ontem"]))
-#print(SortedTable([["bb", "cc", "b", "b"], ["bb", "cc", "a", "b"], ["bb", "Ân", "a", "b"], ["aa", "b", "a", "b"]]))
+
+def OvwFP(aaFP, chave, xCorrespondencia):
+    '''
+    SUM.- Reescreve, na função parcial <aaFP>, a associação «chave»->«Corresp», e retorna <aaFP>.
+          Se a chave não existir, insere normalmente.
+    Parâmetros:
+      - aaFP: FParcial.
+      - chave: Chave a inserir/reescrever.
+      - xCorrespondencia: Valor a associar.
+    Resultado: FParcial
+    Notas:
+      - Aconselha-se inserir apenas chaves do mesmo tipo.
+      - Se <xCorrespondencia> for list ou dict, guarda apenas a referência, não duplica.
+    '''
+    nPos = None
+    for n in range(0, len(aaFP)):
+        if aaFP[n][0] == chave:
+            nPos = n
+            break
+
+    if nPos != None:
+        # => chave existe na posição aaFP[nPos][0], logo reescreve a correspondência:
+        aaFP[nPos][1] = xCorrespondencia
+    else:  # // não existe => insere
+        aaFP.append([chave, xCorrespondencia])
+
+    return aaFP
+
+
+def InsFp_After(aaFP, chave, xCorrespondencia, chaveOnde):
+    '''
+    Insere um par [chave, xCorrespondencia] depois da posição de chaveOnde.
+    '''
+    for i in range(len(aaFP), 0, -1):
+        if aaFP[i-1][0] == chaveOnde:
+            aaFP.insert(i, [chave, xCorrespondencia])
+            break
+    return aaFP
+
+
+def RemFP(aaFP, chave):
+    '''
+    Remove chave de aaFP.
+    '''
+    n = 0
+    while n < len(aaFP):
+        if aaFP[n][0] == chave:
+            aaFP.pop(n)
+        n += 1
+
+
+def ApFP(aFP, chave, xValorPorDefeito=None):
+    '''
+    Aplica a Função Parcial aFP à chave.
+    Dada a função parcial aFP, aplica a chave. Se encontrar, retorna a correspondência, senão retorna xValorPorDefeito.
+    Parms.:
+      - aFP: Lista de pares ou Tuplo de pares.
+      - chave: Chave a procurar.
+      - [xValorPorDefeito] (None): Valor retornado se não existir a chave.
+    '''
+    '''
+    Exemplos:
+      - aFP:
+        - [["b", 2], ["a", 4]]
+        - (("b",2), ("a",4))
+    '''
+    for e in aFP:
+        if e[0] == chave:
+            return e[1]
+    return xValorPorDefeito
+
+
+def PertenceFP(aFP, chave):
+    '''
+    Indica se existe na Função Parcial aFP a chave.
+    Parms.:
+      - aFP: Lista de pares ou Tuplo de pares.
+      - chave: Chave a procurar.
+    '''
+    for e in aFP:
+        if e[0] == chave:
+            return True
+    return False
+import copy
+
+
+def ACopy(a):
+    '''
+    SUM.- Retorna cópia rápida duma lista. Cuidado com listas e objetos aninhados: não serão clones -- para clonar cf. AClone.
+    '''
+    return a[:]
+
+
+def AClone(a):
+    '''
+    SUM.- Retorna clone duma lista.
+
+    Notas: +- <=> AClone() do Xbase++.
+    '''
+    return copy.deepcopy(a)
+
+
+def ATail(a, xVPD=None):
+    '''
+    SUM.- Retorna o último elemento duma lista.
+    '''
+    if a:
+        return a[-1]
+    else:
+        return xVPD
+
+
+def HaInterseccaoListas(a1, a2):
+    '''
+    Indica se pelo menos um elemento é comum às duas listas.
+    '''
+    for i in a1:
+        if i in a2:
+            return True
+    return False
+
+
+def ListaContidaEm(a1, a2) -> bool:
+    '''
+    Indica se todos os elementos de a1 estão em a2. Se a1 = [], retorna True.
+    '''
+    for e in a1:
+        if not e in a2:
+            return False
+    return True
+
+
+def RightRemove(alist, x):
+    '''
+    Remove a última ocorrência de x em alist.
+    '''
+    for i in range(len(alist), 0, -1):  # Do fim p o início.
+        if alist[i-1] == x:
+            alist.pop(i-1)
+            break
+
+
+def RemoveVaziosLista(acStr) -> list:
+    '''
+    Remover elementos vazios da lista.
+    '''
+    # A lista pode ter de ser percorrida mais de uma vez, daí o "while".
+    while True:
+        lRepete = False
+        for i in acStr:
+            # v ant 19/12: arriscado com zeros, {}, etc...
+            # if not i:
+            if i == None or i == "":
+                acStr.remove(i)
+                lRepete = True
+        if not lRepete:
+            break  # Termina "while"
+    return acStr
+
+
+def LimpaParticulas(acStr, acParticulas, lRemover=False):
+    '''
+    Anula uma lista de palavras numa lista, com opção de remoção.
+    Parms.:
+      - acStr: Lista a tratar.
+      - acParticulas: Lista de palavras a anular na lista.
+      - [lRemover] (False): Indica se os itens anulados devem ser removidos da lista, senão ficam como "".
+    Exs.:
+      - LimpaParticulas(["em", "casa", "de"], ["de", "em"]) == ["", "casa", ""]
+      - LimpaParticulas(["em", "casa", "de"], ["de", "em"], True) == ["casa"]
+    '''
+    for n in range(0, len(acStr)):
+        if acStr[n] in acParticulas:
+            acStr[n] = ""
+
+    if lRemover:
+        RemoveVaziosLista(acStr)
+    return acStr
