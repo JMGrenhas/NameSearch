@@ -6,7 +6,7 @@
 import re
 
 from .jg_base_iter import (ApFP, ATail, ListaContidaEm, RemoveVaziosLista,
-                              TiraDupEsp, camelCase2lowcase, strip_accents)
+                           TiraDupEsp, camelCase2lowcase, strip_accents)
 
 # Função parcial que transforma, numa grafia normalizada, palavras completas de nomes, se bem que em minúsculas e sem acentos.
 # Racional: facilitar comparações em pesquisas.
@@ -98,7 +98,7 @@ def Name_List_Search(acNameList: list, cSearch: str,
       - acNameList: Lista de procura.
       - cSearch: Valor de procura.
       - [lGet1] (False): Indica se retorna logo após encontrar um valor.
-      - [lInitials] (True): Indica se é permitida a unificação pelas iniciais (primeiro caráter) de cSearch. Só irá ocorrer esta pesquisa se cSearch, depois de normalizada, tiver mais de uma palavra. Lembre-se que a normalização retira certas palavras como "de", "da", etc..
+      - [lInitials] (True): Indica se é permitida a unificação pelas iniciais (primeiro caráter das palavras) de cSearch. Só irá ocorrer esta pesquisa se cSearch, depois de normalizada, tiver mais de uma palavra. Lembre-se que a normalização retira certas palavras como "de", "da", etc..
 
     Resultado: Lista de cadeias de unificação.
     '''
