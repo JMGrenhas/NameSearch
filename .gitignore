@@ -1,6 +1,6 @@
 *.pyc
 _bak/*
 *.bat
-./desktop.ini
+desktop.ini
 
-./README_desenv.md
+README_desenv.md
