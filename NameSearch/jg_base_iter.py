@@ -1,5 +1,5 @@
 '''
-  jg_base_iter.py - fs. básicas sobre iteráveis, incluindo strings.
+  jg_base_iter.py - funções básicas sobre iteráveis, incluindo strings.
   
   Preferencialmente, só deve ter dependências de módulos python.
 '''
