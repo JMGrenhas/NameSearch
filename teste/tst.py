@@ -2,20 +2,18 @@ from NameSearch import Name_List_Search, Name_List_Search_unfolded
 
 acNameList = []
 
-'''
 acNameList += [
     "Manuel do Almada",
     "José da Carvalhosa",
-    "João Manuel Pós-de-Mina Grenhas",
-    "João Rogado Grenhas",
+    "José Maciel Pós-de-Mina Silva",
+    "João_M_P_M_Silva_d19690621",
+    "João Maria Grenhas",
+    "João Maria Grenhas (194x)",    
+    "João_M_Grenhas_d1941",
+    "João_M_Grenhas_d194x",    
     "João Maria de Carvalho",
-    "Maria Isilda da Silva Mendes",
-    "Manuel_Almada_d1966",
-    "João_M_P_M_Grenhas_d19680119",
-    "João_R_Grenhas_d1941",
-    "João_R_Grenhas_d194x",
-    "João Rogado Grenhas (194x)",
-    "Luzia__Grenhas_d1942"
+    "Maria Isolda Pereira da Mata",
+    "Manuel_Almada_d1966"    
 ]
 acNameList += [
     "Alberto Carvalho Júnior",
@@ -27,7 +25,6 @@ acNameList += [
     "Rui Abrantes III",
     "Ruy Philippe Nery"
 ]
-'''
 acNameList += [
     "João Rogado Grenhas",
     "João Manuel Grenhas",
@@ -38,7 +35,6 @@ acNameList += [
     "João Rogado Grenhas (194x)",
     "Luzia__Grenhas_d1942"
 ]
-
 acNameList += [
     "anb:João_M_P_M_Grenhas_d19680119",
     ":João_M_P_M_Grenhas_d19680119",
