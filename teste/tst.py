@@ -2,22 +2,21 @@ from NameSearch import Name_List_Search, Name_List_Search_unfolded
 
 acNameList = []
 
+# As cadeias "estranhas" são identificadores de ontologia
 acNameList += [
-    "Manuel do Almada",
     "José da Carvalhosa",
-    "José Maciel Pós-de-Mina Silva",
-    "João_M_P_M_Silva_d19690621",
-    "João Maria Grenhas",
-    "João Maria Grenhas (194x)",    
-    "João_M_Grenhas_d1941",
-    "João_M_Grenhas_d194x",    
-    "João Maria de Carvalho",
-    "Maria Isolda Pereira da Mata",
-    "Manuel_Almada_d1966"    
-]
-acNameList += [
-    "Alberto Carvalho Júnior",
     "João Júnior",
+    "João Maciel Pós-de-Mina Garcia",
+    "João Maciel Garcia",
+    "João Rosado Garcia",
+    "João Rosado Garcia (194x)",    
+    "João_M_Garcia_d1941",
+    "João_M_Garcia_d194x",    
+    "João Maria de Carvalho",
+    "Maria Isabel Pereira da Mata",
+    "Manuel do Almada",
+    "Manuel_Almada_d1966",
+    "Alberto Carvalho Júnior",
     "Manuel Carvalho da Silva e do Silvo Júnior",
     "Manuel Carvalho Sénior",
     "Manuel do Ó",
@@ -26,28 +25,11 @@ acNameList += [
     "Ruy Philippe Nery"
 ]
 acNameList += [
-    "João Rogado Grenhas",
-    "João Manuel Grenhas",
-    "Manuel_Almada_d1966",
-    "João_M_P_M_Grenhas_d19680119",
-    "João_R_Grenhas_d1941",
-    "João_R_Grenhas_d194x",
-    "João Rogado Grenhas (194x)",
-    "Luzia__Grenhas_d1942"
-]
-acNameList += [
-    "anb:João_M_P_M_Grenhas_d19680119",
-    ":João_M_P_M_Grenhas_d19680119",
-    "João_R_Grenhas_d1941",
-    "João Rogado Grenhas (1941)",
-    "Luzia__Grenhas 1942"
-]
-
-acNameList += [
+    "João_M_P_M_Garcia_d19690621",
+    ":João_M_P_M_Garcia_d19690621",
+    "anb:João_M_P_M_Garcia_d19690621",
     "anb:temAvô",
-    "anb:João_M_P_M_Grenhas_d19680119",
-    ":João_M_P_M_Grenhas_d19680119",
-    ":J_M_P_M_Grenhas_d0000"
+    ":J_M_P_M_Garcia_d0000"
 ]
 
 acNameList += ["Aqui, em Guimarães, onde... "
