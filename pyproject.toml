@@ -4,7 +4,7 @@ build-backend = "flit_core.buildapi"
 
 [project]
 name = "NameSearch"
-authors = [{name = "JMGrenhas", email = "jmpmgrenhas@gmail.com"}]
+authors = [{name = "JMGrenhas", email = "fordev22@proton.me"}]
 readme = "README.md"
 license = {file = "LICENSE"}
 classifiers = ["License :: OSI Approved :: MIT License"]
